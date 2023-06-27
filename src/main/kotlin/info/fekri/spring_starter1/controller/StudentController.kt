@@ -6,7 +6,9 @@ import info.fekri.spring_starter1.repository.StudentRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -21,9 +23,8 @@ class StudentController {
     }
 
     @GetMapping("/students")
-    fun getAllStudents(): ResponseEntity<MutableIterable<Student>> {
-        return ResponseEntity.ok(studentRepository.findAll())
-    }
+    fun getAllStudents(): ResponseEntity<MutableIterable<Student>> = ResponseEntity.ok(studentRepository.findAll())
+
 
     @PostMapping("/students")
     fun insertStudent(@RequestBody data: String): ResponseEntity<String> {
@@ -33,7 +34,22 @@ class StudentController {
 
         studentRepository.save(newStudent)
 
-        return ResponseEntity.ok("sucess")
+        return ResponseEntity.ok("success")
+    }
+
+    @PutMapping("/students/update{firstName}")
+    fun updateStudent(
+        @PathVariable("firstName") firstName: String ,
+        @RequestBody data: String
+    ): ResponseEntity<String> {
+        val gson = Gson()
+        val newStudent : Student = gson.fromJson(data, Student::class.java)
+
+        studentRepository.save(newStudent)
+
+        println("Student ==> $newStudent")
+
+        return ResponseEntity.ok("success")
     }
 
 }
